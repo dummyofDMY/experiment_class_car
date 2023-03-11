@@ -5,7 +5,7 @@
 
 Car car;
 
-void run()
+extern void run()
 {
   car.control();
   return;

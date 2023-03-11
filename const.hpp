@@ -30,7 +30,7 @@
 #define KI_T 10
 #define KD_T 0.1
 
-#define V_MAX 10
+#define V_MAX 15
 #define PERIOD 0.01
 #define EVENT_LENGHT 1000
 

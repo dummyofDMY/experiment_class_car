@@ -19,7 +19,7 @@ void Car::control()
     left_pid.update(l_v - tar_v_l);
     right_pid.update(r_v - tar_v_r);
     l_cmd = left_pid.calculate(), r_cmd = right_pid.calculate();
-    data_print();
+    // data_print();
     send_cmd(l_cmd, r_cmd);
     // send_cmd_test();
     return;
@@ -27,9 +27,9 @@ void Car::control()
 
 void Car::data_print()
 {
-    Serial.print("TIME::\t");
-    Serial.print(micros());
-    Serial.print('\t');
+    // Serial.print("TIME::\t");
+    // Serial.print(micros());
+    // Serial.print('\t');
     // if (event) {
     //     Serial.print("!!!\tEVEN\t!!!");
     // }
@@ -75,21 +75,24 @@ void Car::decide_tar_sen()
         }
     }
     if (emerge_l + emerge_r >= 6) {
+        MsTimer2::stop();
         tar_v_l = 0;
         tar_v_r = 0;
-        // event = true;
+        event = true;
         return;
     }
     if (emerge_l >= 3) {
+        MsTimer2::stop();
         tar_v_l = -0.4 * V_MAX;
         tar_v_r = 1.4 * V_MAX;
-        // event = true;
+        event = true;
         return;
     }
     if (emerge_r >= 3) {
+        MsTimer2::stop();
         tar_v_l = 1.4 * V_MAX;
         tar_v_r = -0.4 * V_MAX;
-        // event = true;
+        event = true;
         return;
     }
     if (1 == sen.data[0]) {
@@ -113,23 +116,23 @@ void Car::decide_tar_sen()
         return;
     }
     if (1 == sen.data[2]) {
-        tar_v_l -= V_MAX * 1;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l -= V_MAX * 0.5;
+        tar_v_r -= V_MAX * 0;
         return;
     }
     if (1 == sen.data[5]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 1;
+        tar_v_l -= V_MAX * 0;
+        tar_v_r -= V_MAX * 0.5;
         return;
     }
     if (1 == sen.data[3]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 0.2;
+        tar_v_l -= V_MAX * 0.3;
+        tar_v_r -= V_MAX * 0;
         return;
     }
     if (1 == sen.data[4]) {
-        tar_v_l -= V_MAX * 0.2;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l -= V_MAX * 0;
+        tar_v_r -= V_MAX * 0.3;
         return;
     }
 }
@@ -169,10 +172,11 @@ void Car::send_cmd(double l_cmd, double r_cmd)
         digitalWrite(IN_R_B, LOW);
     }
     analogWrite(PWM_R, abs(leagalize(r_cmd)));
-    // if (event) {
-    //     delay(EVENT_LENGHT);
-    //     event = false;
-    // }
+    if (event) {
+        MsTimer2::set(PERIOD * 1e3, run);
+        delay(EVENT_LENGHT);
+        event = false;
+    }
     return;
 }
 

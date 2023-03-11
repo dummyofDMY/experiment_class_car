@@ -16,7 +16,7 @@ private:
     double l_v, r_v;
     double tar_v_l, tar_v_r;
     int l_cmd, r_cmd;
-    // bool event;
+    bool event;
     void decide_tar_PID();
     void decide_tar_sen();
     void tar_print();
