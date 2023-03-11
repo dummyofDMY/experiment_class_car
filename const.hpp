@@ -23,7 +23,7 @@
 #define R_CO_B 7
 
 #define KP_W 40
-#define KI_W 0
+#define KI_W 10
 #define KD_W 0.05
 
 #define KP_T 20
@@ -32,6 +32,7 @@
 
 #define V_MAX 15
 #define PERIOD 0.01
-#define EVENT_LENGHT 1000
+#define EVENT_LENGHT 200
+#define CRITIS_LENGHT 200
 
 #endif

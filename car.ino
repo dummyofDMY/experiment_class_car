@@ -2,7 +2,7 @@
 #include"coder.h"
 
 Car::Car() : pwm_l{ PWM_L }, pwm_r{ PWM_R }, in_l_a{ IN_L_A }, in_l_b{ IN_L_B }, in_r_a{ IN_R_A }, in_r_b{ IN_R_B },
-sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0)/*, event{ false }*/ {}
+sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0), event{ false }, critis{ false } {}
 
 void Car::control()
 {
@@ -75,64 +75,63 @@ void Car::decide_tar_sen()
         }
     }
     if (emerge_l + emerge_r >= 6) {
-        MsTimer2::stop();
         tar_v_l = 0;
         tar_v_r = 0;
-        event = true;
+        critis = true;
         return;
     }
     if (emerge_l >= 3) {
-        MsTimer2::stop();
         tar_v_l = -0.4 * V_MAX;
-        tar_v_r = 1.4 * V_MAX;
-        event = true;
+        tar_v_r = 1 * V_MAX;
+        critis = true;
         return;
     }
     if (emerge_r >= 3) {
-        MsTimer2::stop();
-        tar_v_l = 1.4 * V_MAX;
+        tar_v_l = 1 * V_MAX;
         tar_v_r = -0.4 * V_MAX;
-        event = true;
+        critis = true;
         return;
     }
     if (1 == sen.data[0]) {
-        tar_v_l -= V_MAX * 1.3;
-        tar_v_r -= V_MAX * 0.7;
+        tar_v_l -= V_MAX * 2.0;
+        tar_v_r -= V_MAX * -0.2;
+        // event = true;
         return;
     }
     if (1 == sen.data[7]) {
-        tar_v_l -= V_MAX * 0.7;
-        tar_v_r -= V_MAX * 1.3;
+        tar_v_l -= V_MAX * -0.2;
+        tar_v_r -= V_MAX * 2.0;
+        // event = true;
         return;
     }
     if (1 == sen.data[1]) {
-        tar_v_l -= V_MAX * 1;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l -= V_MAX * 2.0;
+        tar_v_r -= V_MAX * -0.0;
         return;
     }
     if (1 == sen.data[6]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 1;
+        tar_v_l -= V_MAX * -0.0;
+        tar_v_r -= V_MAX * 2.0;
         return;
     }
     if (1 == sen.data[2]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 0;
+        tar_v_l -= V_MAX * 0.9;
+        tar_v_r -= V_MAX * -0.5;
         return;
     }
     if (1 == sen.data[5]) {
-        tar_v_l -= V_MAX * 0;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l -= V_MAX * -0.5;
+        tar_v_r -= V_MAX * 0.9;
         return;
     }
     if (1 == sen.data[3]) {
-        tar_v_l -= V_MAX * 0.3;
-        tar_v_r -= V_MAX * 0;
+        tar_v_l -= V_MAX * 0.5;
+        tar_v_r -= V_MAX * -0.4;
         return;
     }
     if (1 == sen.data[4]) {
-        tar_v_l -= V_MAX * 0;
-        tar_v_r -= V_MAX * 0.3;
+        tar_v_l -= V_MAX * -0.4;
+        tar_v_r -= V_MAX * 0.5;
         return;
     }
 }
@@ -172,8 +171,11 @@ void Car::send_cmd(double l_cmd, double r_cmd)
         digitalWrite(IN_R_B, LOW);
     }
     analogWrite(PWM_R, abs(leagalize(r_cmd)));
-    if (event) {
-        MsTimer2::set(PERIOD * 1e3, run);
+    if (critis) {
+        delay(CRITIS_LENGHT);
+        critis = false;
+    }
+    else if (event) {
         delay(EVENT_LENGHT);
         event = false;
     }

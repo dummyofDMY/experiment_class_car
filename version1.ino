@@ -1,7 +1,6 @@
 #include"PID.hpp"
 #include"car.hpp"
 #include"const.hpp"
-#include<MsTimer2.h>
 
 Car car;
 
@@ -33,10 +32,10 @@ void setup() {
     Serial.begin(9600);
     attachInterrupt(digitalPinToInterrupt(L_CO_A), l_co_count, RISING);
     attachInterrupt(digitalPinToInterrupt(R_CO_A), r_co_count, RISING);
-    MsTimer2::set(PERIOD * 1e3, run);
-    MsTimer2::start();
 }
 
 void loop() {
-
+  static long last_t = micros();
+  while (micros() - last_t < PERIOD * 1e6);
+  car.control();
 }
