@@ -81,14 +81,14 @@ void Car::decide_tar_sen()
         return;
     }
     if (emerge_l >= 3) {
-        tar_v_l = -0.4 * V_MAX;
-        tar_v_r = 1 * V_MAX;
+        tar_v_l = -0.5 * V_MAX;
+        tar_v_r = 1.3 * V_MAX;
         critis = true;
         return;
     }
     if (emerge_r >= 3) {
-        tar_v_l = 1 * V_MAX;
-        tar_v_r = -0.4 * V_MAX;
+        tar_v_l = 1.3 * V_MAX;
+        tar_v_r = -0.5 * V_MAX;
         critis = true;
         return;
     }
