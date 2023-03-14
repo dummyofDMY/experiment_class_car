@@ -41,6 +41,6 @@
 #define V_MAX 15
 #define PERIOD 0.01
 #define EVENT_LENGHT 200
-#define CRITIS_LENGHT 200
+#define CRITIS_LENGHT 250
 
 #endif

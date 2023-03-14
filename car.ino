@@ -80,58 +80,63 @@ void Car::decide_tar_sen()
         critis = true;
         return;
     }
+
     if (emerge_l >= 3) {
-        tar_v_l = -0.5 * V_MAX;
+        tar_v_l = -1.5 * V_MAX;
         tar_v_r = 1.3 * V_MAX;
         critis = true;
         return;
     }
     if (emerge_r >= 3) {
         tar_v_l = 1.3 * V_MAX;
-        tar_v_r = -0.5 * V_MAX;
+        tar_v_r = -1.5 * V_MAX;
         critis = true;
         return;
     }
+    //四级警报
     if (1 == sen.data[0]) {
-        tar_v_l -= V_MAX * 2.0;
-        tar_v_r -= V_MAX * -0.2;
+        tar_v_l = V_MAX * -1.3;
+        tar_v_r = V_MAX * 0.9;
         // event = true;
         return;
     }
     if (1 == sen.data[7]) {
-        tar_v_l -= V_MAX * -0.2;
-        tar_v_r -= V_MAX * 2.0;
+        tar_v_l = V_MAX * 0.9;
+        tar_v_r = V_MAX * -1.3;
         // event = true;
         return;
     }
+    //三级警报
     if (1 == sen.data[1]) {
-        tar_v_l -= V_MAX * 1.0;
-        tar_v_r -= V_MAX * -0.0;
+        tar_v_l = V_MAX * -0.4;
+        tar_v_r = V_MAX * 0.6;
         return;
     }
     if (1 == sen.data[6]) {
-        tar_v_l -= V_MAX * -0.0;
-        tar_v_r -= V_MAX * 1.0;
+        tar_v_l = V_MAX * 0.6;
+        tar_v_r = V_MAX * -0.4;
         return;
     }
+    //二级警报
     if (1 == sen.data[2]) {
-        tar_v_l -= V_MAX * 0.9;
-        tar_v_r -= V_MAX * -0.5;
+        tar_v_l = V_MAX * -0.3;
+        tar_v_r = V_MAX * 1.1;
         return;
     }
     if (1 == sen.data[5]) {
-        tar_v_l -= V_MAX * -0.5;
-        tar_v_r -= V_MAX * 0.9;
+        tar_v_l = V_MAX * 1.1;
+        tar_v_r = V_MAX * -0.3;
         return;
     }
+    //一级警报
     if (1 == sen.data[3]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * -0.4;
+        tar_v_l = V_MAX * 0.2;
+        tar_v_r = V_MAX * 1,1;
         return;
     }
     if (1 == sen.data[4]) {
-        tar_v_l -= V_MAX * -0.4;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l = V_MAX * 1.1;
+        tar_v_r = V_MAX * 0.2;
         return;
     }
 }
