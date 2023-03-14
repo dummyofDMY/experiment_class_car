@@ -105,13 +105,13 @@ void Car::decide_tar_sen()
         return;
     }
     if (1 == sen.data[1]) {
-        tar_v_l -= V_MAX * 2.0;
+        tar_v_l -= V_MAX * 1.0;
         tar_v_r -= V_MAX * -0.0;
         return;
     }
     if (1 == sen.data[6]) {
         tar_v_l -= V_MAX * -0.0;
-        tar_v_r -= V_MAX * 2.0;
+        tar_v_r -= V_MAX * 1.0;
         return;
     }
     if (1 == sen.data[2]) {

@@ -22,6 +22,14 @@
 #define R_CO_A 3
 #define R_CO_B 7
 
+#define BASE_PIN 44
+#define PAW_PIN 46
+
+#define BASE_HORI 70
+#define BASE_VER 110
+#define PAW_OPEN 70
+#define PAW_CLOSE 110
+
 #define KP_W 40
 #define KI_W 10
 #define KD_W 0.05
