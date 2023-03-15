@@ -18,12 +18,14 @@ private:
     int l_cmd, r_cmd;
     bool event;
     bool critis;
+    long init_t;
     void decide_tar_PID();
     void decide_tar_sen();
     void tar_print();
     void cmd_print();
     void send_cmd(double l_cmd, double r_cmd);
     void send_cmd_test();
+    void place();
 public:
     Car();
     void control();

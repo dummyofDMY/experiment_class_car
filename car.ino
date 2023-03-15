@@ -2,7 +2,8 @@
 #include"coder.h"
 
 Car::Car() : pwm_l{ PWM_L }, pwm_r{ PWM_R }, in_l_a{ IN_L_A }, in_l_b{ IN_L_B }, in_r_a{ IN_R_A }, in_r_b{ IN_R_B },
-sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0), event{ false }, critis{ false } {}
+sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0),
+event{ false }, critis{ false }, init_t{micros()} {}
 
 void Car::control()
 {
@@ -74,20 +75,22 @@ void Car::decide_tar_sen()
             ++emerge_r;
         }
     }
-    if (emerge_l + emerge_r >= 6) {
+    if (emerge_l + emerge_r >= 5) {
         tar_v_l = 0;
         tar_v_r = 0;
-        critis = true;
+        if (micros() - init_t >= 40 * 1e6) {
+            place();
+        }
         return;
     }
 
-    if (emerge_l >= 3) {
+    if (emerge_l >= 3 && micros() - init_t >= 15 * 1e6 && emerge_r <= 0) {
         tar_v_l = -1.5 * V_MAX;
         tar_v_r = 1.3 * V_MAX;
         critis = true;
         return;
     }
-    if (emerge_r >= 3) {
+    if (emerge_r >= 3 && micros() - init_t >= 15 * 1e6 && emerge_l <= 0) {
         tar_v_l = 1.3 * V_MAX;
         tar_v_r = -1.5 * V_MAX;
         critis = true;
@@ -95,14 +98,14 @@ void Car::decide_tar_sen()
     }
     //四级警报
     if (1 == sen.data[0]) {
-        tar_v_l = V_MAX * -1.3;
-        tar_v_r = V_MAX * 0.9;
+        tar_v_l = V_MAX * -1;
+        tar_v_r = V_MAX * 1;
         // event = true;
         return;
     }
     if (1 == sen.data[7]) {
-        tar_v_l = V_MAX * 0.9;
-        tar_v_r = V_MAX * -1.3;
+        tar_v_l = V_MAX * 1;
+        tar_v_r = V_MAX * -1;
         // event = true;
         return;
     }
@@ -139,6 +142,27 @@ void Car::decide_tar_sen()
         tar_v_r = V_MAX * 0.2;
         return;
     }
+}
+
+void Car::place()
+{
+    // send_cmd(V_MAX, -V_MAX);
+    // analogWrite(PWM_L, 0);
+    // analogWrite(PWM_R, 0);
+    // delay(1000);
+    digitalWrite(IN_L_A, LOW);
+    digitalWrite(IN_L_B, HIGH);
+    analogWrite(PWM_L, 255);
+    digitalWrite(IN_R_A, LOW);
+    digitalWrite(IN_R_B, HIGH);
+    analogWrite(PWM_R, 255);
+    delay(300);
+    analogWrite(PWM_L, 0);
+    analogWrite(PWM_R, 0);
+    base.write(BASE_HORI);
+    paw.write(PAW_OPEN);
+    while(1) {};
+    return;
 }
 
 void Car::tar_print()
