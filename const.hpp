@@ -38,9 +38,11 @@
 #define KI_T 10
 #define KD_T 0.1
 
-#define V_MAX 15
+#define V_MAX 100
 #define PERIOD 0.01
 #define EVENT_LENGHT 200
 #define CRITIS_LENGHT 250
+#define L_COMPENSATE 1
+#define R_COMPENSATE 1
 
 #endif

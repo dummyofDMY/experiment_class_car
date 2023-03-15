@@ -16,10 +16,12 @@ void Car::control()
     decide_tar_sen();
     // left_pid.update(l_v - tar_v_l, sen.t);
     // right_pid.update(r_v - tar_v_r, sen.t);
-    left_pid.update(l_v - tar_v_l);
-    right_pid.update(r_v - tar_v_r);
-    l_cmd = left_pid.calculate(), r_cmd = right_pid.calculate();
+    // left_pid.update(l_v - tar_v_l);
+    // right_pid.update(r_v - tar_v_r);
+    // l_cmd = left_pid.calculate(), r_cmd = right_pid.calculate();
     // data_print();
+    l_cmd = tar_v_l;
+    r_cmd = tar_v_r;
     send_cmd(l_cmd, r_cmd);
     // send_cmd_test();
     return;
@@ -63,8 +65,8 @@ void Car::decide_tar_PID()
 
 void Car::decide_tar_sen()
 {
-    tar_v_l = V_MAX * 0.7;
-    tar_v_r = V_MAX * 0.7;
+    tar_v_l = V_MAX * 1;
+    tar_v_r = V_MAX * 1;
     int emerge_l = 0, emerge_r = 0;
     for (int i = 0; i < 3; ++i) {
         if (1 == sen.data[i]) {
@@ -95,48 +97,48 @@ void Car::decide_tar_sen()
     }
     //四级警报
     if (1 == sen.data[0]) {
-        tar_v_l = V_MAX * -1.3;
-        tar_v_r = V_MAX * 0.9;
+        tar_v_l = V_MAX * -0.5;
+        tar_v_r = V_MAX * 1;
         // event = true;
         return;
     }
     if (1 == sen.data[7]) {
-        tar_v_l = V_MAX * 0.9;
-        tar_v_r = V_MAX * -1.3;
+        tar_v_l = V_MAX * 1;
+        tar_v_r = V_MAX * -0.5;
         // event = true;
         return;
     }
     //三级警报
     if (1 == sen.data[1]) {
-        tar_v_l = V_MAX * -0.4;
-        tar_v_r = V_MAX * 0.6;
+        tar_v_l = V_MAX * 0;
+        tar_v_r = V_MAX * 1;
         return;
     }
     if (1 == sen.data[6]) {
-        tar_v_l = V_MAX * 0.6;
-        tar_v_r = V_MAX * -0.4;
+        tar_v_l = V_MAX * 1;
+        tar_v_r = V_MAX * 1;
         return;
     }
     //二级警报
     if (1 == sen.data[2]) {
-        tar_v_l = V_MAX * -0.3;
-        tar_v_r = V_MAX * 1.1;
+        tar_v_l = V_MAX * 0.5;
+        tar_v_r = V_MAX * 1.5;
         return;
     }
     if (1 == sen.data[5]) {
-        tar_v_l = V_MAX * 1.1;
-        tar_v_r = V_MAX * -0.3;
+        tar_v_l = V_MAX * 1.5;
+        tar_v_r = V_MAX * 0.5;
         return;
     }
     //一级警报
     if (1 == sen.data[3]) {
-        tar_v_l = V_MAX * 0.2;
-        tar_v_r = V_MAX * 1,1;
+        tar_v_l = V_MAX * 0.8;
+        tar_v_r = V_MAX * 1.3;
         return;
     }
     if (1 == sen.data[4]) {
-        tar_v_l = V_MAX * 1.1;
-        tar_v_r = V_MAX * 0.2;
+        tar_v_l = V_MAX * 1.3;
+        tar_v_r = V_MAX * 0.8;
         return;
     }
 }
