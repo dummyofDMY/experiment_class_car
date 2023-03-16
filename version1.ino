@@ -1,5 +1,6 @@
 #include"PID.hpp"
 #include"car.hpp"
+#include"ultra.h"
 #include"const.hpp"
 #include<Servo.h>
 
@@ -45,6 +46,8 @@ void setup() {
     pinMode(R_CO_B, INPUT);
     pinMode(BASE_PIN, OUTPUT);
     pinMode(PAW_PIN, OUTPUT);
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
     Serial.begin(9600);
     attachInterrupt(digitalPinToInterrupt(L_CO_A), l_co_count, RISING);
     attachInterrupt(digitalPinToInterrupt(R_CO_A), r_co_count, RISING);

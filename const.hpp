@@ -25,6 +25,9 @@
 #define BASE_PIN 44
 #define PAW_PIN 46
 
+#define TRIG_PIN 52
+#define ECHO_PIN 53
+
 #define BASE_HORI 70
 #define BASE_VER 110
 #define PAW_OPEN 70
