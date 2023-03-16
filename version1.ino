@@ -60,4 +60,5 @@ void loop() {
   static long last_t = micros();
   while (micros() - last_t < PERIOD * 1e6);
   car.control();
+  measure_dis();
 }
