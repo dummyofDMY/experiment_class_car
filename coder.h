@@ -1,6 +1,8 @@
 #ifndef _CODER_
 #define _CODER_
 
+#include"const.hpp"
+
 extern int left_coder = 0;
 extern int right_coder = 0;
 extern long last_l_t = micros();

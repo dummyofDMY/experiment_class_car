@@ -2,10 +2,15 @@
 #include"coder.h"
 
 Car::Car() : pwm_l{ PWM_L }, pwm_r{ PWM_R }, in_l_a{ IN_L_A }, in_l_b{ IN_L_B }, in_r_a{ IN_R_A }, in_r_b{ IN_R_B },
-sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0)/*, event{ false }*/ {}
+sen(), left_pid(KP_W, KI_W, KD_W, -V_MAX), right_pid(KP_W, KI_W, KD_W, -V_MAX), dire(KP_T, KI_T, KD_T, 0),
+tar_v_l{V_MAX * 0.7}, tar_v_r{V_MAX * 0.7}, init_t{micros()} {}
 
 void Car::control()
 {
+    if (is_end) {
+        end();
+        return;
+    }
     sen.read();
     // sen.cal_e();
     l_v = cal_l_v();
@@ -27,13 +32,13 @@ void Car::control()
 
 void Car::data_print()
 {
-    // Serial.print("TIME::\t");
-    // Serial.print(micros());
-    // Serial.print('\t');
+    Serial.print("TIME::\t");
+    Serial.print(micros());
+    Serial.print('\t');
     // if (event) {
     //     Serial.print("!!!\tEVEN\t!!!");
     // }
-    // sen.print();
+    sen.print();
     // step_print();
     // v_print();
     // dire.print_out();
@@ -63,78 +68,84 @@ void Car::decide_tar_PID()
 
 void Car::decide_tar_sen()
 {
-    tar_v_l = V_MAX * 0.7;
-    tar_v_r = V_MAX * 0.7;
+    // tar_v_l = V_MAX * 0.7;
+    // tar_v_r = V_MAX * 0.7;
     int emerge_l = 0, emerge_r = 0;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i <= 3; ++i) {
         if (1 == sen.data[i]) {
             ++emerge_l;
         }
-        if (1 == sen.data[i + 4]) {
+        if (1 == sen.data[i + 3]) {
             ++emerge_r;
         }
     }
-    if (emerge_l + emerge_r >= 6) {
-        MsTimer2::stop();
-        tar_v_l = 0;
-        tar_v_r = 0;
-        event = true;
+    //到达终点
+    if (emerge_l + emerge_r >= 5 && micros() - init_t >= 35 * 1e6) {
+        end_t = micros();
+        is_end = true;
+        tar_v_l = V_MAX * 2;
+        tar_v_r = V_MAX * 2;
         return;
     }
-    if (emerge_l >= 3) {
-        MsTimer2::stop();
+    //直角弯
+    if (emerge_l >= 3 && micros() - init_t >= 15 * 1e6) {
         tar_v_l = -0.4 * V_MAX;
         tar_v_r = 1.4 * V_MAX;
-        event = true;
         return;
     }
-    if (emerge_r >= 3) {
-        MsTimer2::stop();
+    if (emerge_r >= 3 && micros() - init_t >= 15 * 1e6) {
         tar_v_l = 1.4 * V_MAX;
         tar_v_r = -0.4 * V_MAX;
-        event = true;
         return;
     }
+    // if (1 == sen.data[0]) {
+    //     tar_v_l -= V_MAX * 1.3;
+    //     tar_v_r -= V_MAX * 0.7;
+    //     return;
+    // }
+    // if (1 == sen.data[7]) {
+    //     tar_v_l -= V_MAX * 0.7;
+    //     tar_v_r -= V_MAX * 1.3;
+    //     return;
+    // }
     if (1 == sen.data[0]) {
-        tar_v_l -= V_MAX * 1.3;
-        tar_v_r -= V_MAX * 0.7;
-        return;
-    }
-    if (1 == sen.data[7]) {
-        tar_v_l -= V_MAX * 0.7;
-        tar_v_r -= V_MAX * 1.3;
-        return;
-    }
-    if (1 == sen.data[1]) {
-        tar_v_l -= V_MAX * 1;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l = V_MAX * -0.4;
+        tar_v_r = V_MAX * 0.6;
         return;
     }
     if (1 == sen.data[6]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 1;
+        tar_v_l = V_MAX * 0.6;
+        tar_v_r = V_MAX * -0.4;
         return;
     }
-    if (1 == sen.data[2]) {
-        tar_v_l -= V_MAX * 0.5;
-        tar_v_r -= V_MAX * 0;
+    //二级警报
+    if (1 == sen.data[1]) {
+        tar_v_l = V_MAX * 0.3;
+        tar_v_r = V_MAX * 0.7;
         return;
     }
     if (1 == sen.data[5]) {
-        tar_v_l -= V_MAX * 0;
-        tar_v_r -= V_MAX * 0.5;
+        tar_v_l = V_MAX * 0.7;
+        tar_v_r = V_MAX * 0.3;
         return;
     }
-    if (1 == sen.data[3]) {
-        tar_v_l -= V_MAX * 0.3;
-        tar_v_r -= V_MAX * 0;
+    //一级警报
+    if (1 == sen.data[2]) {
+        tar_v_l = V_MAX * 0.8;
+        tar_v_r = V_MAX * 1.1;
         return;
     }
     if (1 == sen.data[4]) {
-        tar_v_l -= V_MAX * 0;
-        tar_v_r -= V_MAX * 0.3;
+        tar_v_l = V_MAX * 1.1;
+        tar_v_r = V_MAX * 0.8;
         return;
     }
+
+    if (1 == sen.data[3]) {
+        tar_v_l = V_MAX;
+        tar_v_r = V_MAX;
+        return;
+    } 
 }
 
 void Car::tar_print()
@@ -172,11 +183,34 @@ void Car::send_cmd(double l_cmd, double r_cmd)
         digitalWrite(IN_R_B, LOW);
     }
     analogWrite(PWM_R, abs(leagalize(r_cmd)));
-    if (event) {
-        MsTimer2::set(PERIOD * 1e3, run);
-        delay(EVENT_LENGHT);
-        event = false;
+    return;
+}
+
+void Car::end()
+{
+    long now_t = micros() - end_t;
+    if (now_t < END_DELAY * 1e6) {
+        digitalWrite(IN_L_A, HIGH);
+        digitalWrite(IN_L_B, LOW);
+        digitalWrite(IN_R_A, LOW);
+        digitalWrite(IN_R_B, HIGH);
+        analogWrite(PWM_L, 100);
+        analogWrite(PWM_R, 100);
+        return;
     }
+    else if (now_t < (END_TURN + END_DELAY) * 1e6) {
+        digitalWrite(IN_L_A, LOW);
+        digitalWrite(IN_L_B, HIGH);
+        digitalWrite(IN_R_A, LOW);
+        digitalWrite(IN_R_B, HIGH);
+        analogWrite(PWM_L, 255);
+        analogWrite(PWM_R, 255);
+        return;
+    }
+    analogWrite(PWM_L, 0);
+    analogWrite(PWM_R, 0);
+    base.write(BASE_HORI);
+    paw.write(PAW_OPEN);
     return;
 }
 
@@ -202,7 +236,7 @@ void Car::send_cmd_test()
     static bool flag = true;
     static int v = 0;
     if (flag) {
-        analogWrite(PWM_L, ++v);
+        // analogWrite(PWM_L, ++v);
         analogWrite(PWM_R, ++v);
         digitalWrite(IN_L_A, HIGH);
         digitalWrite(IN_L_B, LOW);
@@ -213,7 +247,7 @@ void Car::send_cmd_test()
         }
     }
     else {
-        analogWrite(PWM_L, abs(--v));
+        // analogWrite(PWM_L, abs(--v));
         analogWrite(PWM_R, abs(--v));
         digitalWrite(IN_L_A, HIGH);
         digitalWrite(IN_L_B, LOW);

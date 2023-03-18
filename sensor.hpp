@@ -5,8 +5,8 @@
 
 class Sensor {
 public:
-    int pins[8];
-    int data[8];
+    int pins[7];
+    int data[7];
     double e; //负数向左偏
     long t;
     Sensor();
