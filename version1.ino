@@ -1,8 +1,9 @@
-#include"PID.hpp"
-#include"car.hpp"
-#include"const.hpp"
 #include<MsTimer2.h>
 #include<Servo.h>
+#include"PID.hpp"
+#include"car.hpp"
+#include"ultra.hpp"
+#include"const.hpp"
 
 Servo base, paw;
 Car car;
@@ -44,6 +45,8 @@ void setup() {
     pinMode(R_CO_B, INPUT);
     pinMode(BASE_PIN, OUTPUT);
     pinMode(PAW_PIN, OUTPUT);
+	pinMode(ECHO_PIN, INPUT);
+	pinMode(TRIG_PIN, OUTPUT);
     Serial.begin(9600);
     attachInterrupt(digitalPinToInterrupt(L_CO_A), l_co_count, RISING);
     attachInterrupt(digitalPinToInterrupt(R_CO_A), r_co_count, RISING);
@@ -55,5 +58,6 @@ void setup() {
 }
 
 void loop() {
-
+	if (!have_dodge)
+		measure_dis();
 }

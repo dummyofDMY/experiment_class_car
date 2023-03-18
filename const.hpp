@@ -24,6 +24,9 @@
 #define BASE_PIN 44
 #define PAW_PIN 46
 
+#define TRIG_PIN 52
+#define ECHO_PIN 53
+
 #define BASE_HORI 70
 #define BASE_VER 110
 #define PAW_OPEN 70
@@ -37,7 +40,7 @@
 #define KI_T 10
 #define KD_T 0.1
 
-#define V_MAX 10
+#define V_MAX 7
 #define PERIOD 0.005
 #define END_DELAY 0.5
 #define END_TURN 0.25
