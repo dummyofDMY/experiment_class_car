@@ -40,7 +40,9 @@
 #define V_MAX 10
 #define PERIOD 0.005
 #define END_DELAY 0.5
-#define END_TURN 0.25
+#define END_TURN 0.3
+#define END_STOP 1
+#define END_PLACE 0.5
 #define EVENT_LENGHT 200
 
 #endif

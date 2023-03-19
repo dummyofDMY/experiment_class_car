@@ -209,8 +209,12 @@ void Car::end()
     }
     analogWrite(PWM_L, 0);
     analogWrite(PWM_R, 0);
-    base.write(BASE_HORI);
-    paw.write(PAW_OPEN);
+    if (now_t < (END_TURN + END_DELAY + END_STOP) * 1e6) {
+        base.write(BASE_HORI);
+    }
+    else if (END_TURN + END_DELAY + END_STOP + END_PLACE * 1e6) {
+        paw.write(PAW_OPEN);
+    }
     return;
 }
 
