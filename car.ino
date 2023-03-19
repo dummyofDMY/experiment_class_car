@@ -80,7 +80,7 @@ void Car::decide_tar_sen()
         }
     }
     //到达终点
-    if (emerge_l + emerge_r >= 5 && micros() - init_t >= 35 * 1e6) {
+    if (emerge_l + emerge_r >= 6/* && micros() - init_t >= 35 * 1e6*/) {
         end_t = micros();
         is_end = true;
         tar_v_l = V_MAX * 2;
@@ -88,12 +88,12 @@ void Car::decide_tar_sen()
         return;
     }
     //直角弯
-    if (emerge_l >= 3 && micros() - init_t >= 15 * 1e6) {
+    if (emerge_l >= 3 /*&& micros() - init_t >= 15 * 1e6*/) {
         tar_v_l = -0.4 * V_MAX;
         tar_v_r = 1.4 * V_MAX;
         return;
     }
-    if (emerge_r >= 3 && micros() - init_t >= 15 * 1e6) {
+    if (emerge_r >= 3 /*&& micros() - init_t >= 15 * 1e6*/) {
         tar_v_l = 1.4 * V_MAX;
         tar_v_r = -0.4 * V_MAX;
         return;

@@ -58,6 +58,6 @@ void setup() {
 }
 
 void loop() {
-	if (!have_dodge)
+	// if (!have_dodge)
 		measure_dis();
 }

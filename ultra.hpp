@@ -6,33 +6,46 @@ void dodge()
 {
     MsTimer2::stop();
     Serial.print("\n!!!!!DOGGE!!!!!\n");
+    //后退
+    digitalWrite(IN_L_A, LOW);
+    digitalWrite(IN_L_B, HIGH);
+    analogWrite(PWM_L, 100);
+    digitalWrite(IN_R_A, HIGH);
+    digitalWrite(IN_R_B, LOW);
+    analogWrite(PWM_R, 100);
+    delay(500);
+    //左转
     digitalWrite(IN_L_A, LOW);
     digitalWrite(IN_L_B, HIGH);
     analogWrite(PWM_L, 150);
     digitalWrite(IN_R_A, LOW);
     digitalWrite(IN_R_B, HIGH);
     analogWrite(PWM_R, 150);
-    delay(200);
+    delay(180);
+    //直行
     digitalWrite(IN_L_A, HIGH);
     digitalWrite(IN_L_B, LOW);
     analogWrite(PWM_L, 100);
     digitalWrite(IN_R_A, LOW);
     digitalWrite(IN_R_B, HIGH);
     analogWrite(PWM_R, 100);
-    delay(1000);
+    delay(500);
+    //右转
     digitalWrite(IN_L_A, HIGH);
     digitalWrite(IN_L_B, LOW);
     analogWrite(PWM_L, 150);
     digitalWrite(IN_R_A, HIGH);
     digitalWrite(IN_R_B, LOW);
     analogWrite(PWM_R, 150);
-    delay(200);
+    delay(150);
+    //直行
     digitalWrite(IN_L_A, HIGH);
     digitalWrite(IN_L_B, LOW);
     analogWrite(PWM_L, 70);
     digitalWrite(IN_R_A, LOW);
     digitalWrite(IN_R_B, HIGH);
     analogWrite(PWM_R, 70);
+    delay(1200);
     Sensor tem_sen;
     int emerg = 0;
     do {
@@ -62,7 +75,7 @@ void measure_dis()
     Serial.print(dis);
     Serial.print("cm\n");
     delay(500);
-    if (dis <= 30) {
+    if (dis <= 20) {
         dodge();
     }
     return;
