@@ -29,7 +29,7 @@ void dodge()
     digitalWrite(IN_R_A, LOW);
     digitalWrite(IN_R_B, HIGH);
     analogWrite(PWM_R, 100);
-    delay(500);
+    delay(600);
     //右转
     digitalWrite(IN_L_A, HIGH);
     digitalWrite(IN_L_B, LOW);
@@ -37,7 +37,7 @@ void dodge()
     digitalWrite(IN_R_A, HIGH);
     digitalWrite(IN_R_B, LOW);
     analogWrite(PWM_R, 150);
-    delay(150);
+    delay(130);
     //直行
     digitalWrite(IN_L_A, HIGH);
     digitalWrite(IN_L_B, LOW);
@@ -75,7 +75,7 @@ void measure_dis()
     Serial.print(dis);
     Serial.print("cm\n");
     delay(500);
-    if (dis <= 20) {
+    if (dis <= 30) {
         dodge();
     }
     return;

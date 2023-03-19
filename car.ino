@@ -80,7 +80,7 @@ void Car::decide_tar_sen()
         }
     }
     //到达终点
-    if (emerge_l + emerge_r >= 6/* && micros() - init_t >= 35 * 1e6*/) {
+    if (emerge_l + emerge_r >= 6 && micros() - init_t >= 35 * 1e6) {
         end_t = micros();
         is_end = true;
         tar_v_l = V_MAX * 2;
